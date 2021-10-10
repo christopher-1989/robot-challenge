@@ -1,0 +1,11 @@
+{
+  "name": "robot-challenge",
+  "version": "1.0.0",
+  "description": "The application is a simulation of a toy robot moving on a square tabletop",
+  "main": "main.js",
+  "scripts": {
+    "test": "mocha -w"
+  },
+  "author": "Chris McDonald",
+  "license": "ISC"
+}
