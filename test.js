@@ -23,12 +23,24 @@ describe('Inputs', () => {
         })
         it('throws a new error if PLACE is not in command list', () => {
             const testInput = ["NOTPLACE", "ALSONOT"]
-            assert.throws(findFirstPlacement(testInput), /There was no Placement initialisation$/)
+            assert.throws(
+                () => {
+                    findFirstPlacement(testInput)
+                }, 
+                {
+                name: 'Error',
+                message: 'There was no Placement initialisation'
+            })
         })
         describe('PLACE X,Y,F', () => {
             it("throws an error if the format doesn't have a space", () => {
                 const testInput = "PLACEXY"
-                assert.throws(formatPlacementCommand(testInput), 'Test')
+                assert.throws(() => {
+                    formatPlacementCommand(testInput)
+                }, {
+                    name: "Error",
+                    message: "Incorrect format"
+                })
             })
             it('returns an object with the keys x,y,f', () => {
                 const testInput = "PLACE 1,2,LEFT"
