@@ -6,18 +6,25 @@ const {
     rotateLeft,
     rotateRight,
     report,
-    changeActiveRobot
+    changeActiveRobot,
+    move
  } = require('./main')
 
 describe('Inputs', () => {
     describe('PLACE ...', () => {
         it('logs an error if no "PLACE " is given', () => {
             const testInput = ["NOTPLACE"]
-            assert.notEqual(testInput[0], "PLACE ")
+            assert.throws(() => {
+                findFirstPlacement(testInput)
+            }, 
+            {
+                name: "Error",
+                message: "There was no Placement initialisation"
+            })
         })
         it('expects an input to be "PLACE "', () => {
             const testInput = ["PLACE "]
-            assert.equal(testInput[0], "PLACE ")
+            assert.deepEqual(findFirstPlacement(testInput), ["PLACE "])
         })
         it('disregards inputs until the first PLACE command', () => {
             const testInput = ["NOTPLACE", "ALSONOT", "PLACE "]
@@ -232,6 +239,50 @@ describe('Inputs', () => {
                 x: 2,
                 y: 2,
                 f: "EAST"
+            })
+        })
+    })
+    describe("Moves", () => {
+        describe("Validate moves functions", () => {
+            it("will ignore commands to make robot fall off NORTH of the board", () => {
+                const testRobot =
+                   {    
+                        x: 0,
+                        y: 4,
+                        f: "NORTH"
+                    }
+                const result = move(testRobot)
+                assert.equal(result.y, 4)
+            })
+            it("will ignore commands to make robot fall off SOUTH of the board", () => {
+                const testRobot =
+                   {    
+                        x: 0,
+                        y: 0,
+                        f: "SOUTH"
+                    }
+                const result = move(testRobot)
+                assert.equal(result.y, 0)
+            })
+            it("will ignore commands to make robot fall off EAST of the board", () => {
+                const testRobot =
+                   {    
+                        x: 4,
+                        y: 0,
+                        f: "EAST"
+                    }
+                const result = move(testRobot)
+                assert.equal(result.x, 4)            
+            })
+            it("will ignore commands to make robot fall off WEST of the board", () => {
+                const testRobot =
+                   {    
+                        x: 0,
+                        y: 0,
+                        f: "WEST"
+                    }
+                const result = move(testRobot)
+                assert.equal(result.x, 0)            
             })
         })
     })

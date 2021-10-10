@@ -8,28 +8,7 @@ const inputCommands = [
 
 const validDirections = ['NORTH', 'EAST', 'SOUTH', 'WEST']
 
-// const robots = [
-//     {
-//         x: 2,
-//         y: 2,
-//         f: "EAST"
-//     }, 
-//     {
-//         x: 2,
-//         y: 2,
-//         f: "NORTH"
-//     }, 
-//     {
-//         x: 2,
-//         y: 2,
-//         f: "SOUTH"
-//     }, 
-//     {
-//         x: 0,
-//         y: 0,
-//         f: "SOUTH"
-//     }]
-
+const robotsOnTable = []
 
 function findFirstPlacement (listOfCommands) {
     for ( let i = 0; i < listOfCommands.length; i++) {
@@ -43,7 +22,7 @@ function findFirstPlacement (listOfCommands) {
     throw new Error("There was no Placement initialisation")
 }
 
-function formatPlacementCommand (placeCommand) {
+function formatPlacementCommand (placeCommand, robots = []) {
     const coordDirection = placeCommand.split(' ')[1]
     if (!coordDirection) {
         throw new Error("Incorrect format. Expected 'PLACE X,Y,F'")
@@ -57,11 +36,12 @@ function formatPlacementCommand (placeCommand) {
     if(validDirections.indexOf(F) === -1) {
         throw new Error("F must be a valid direction. Expected NORTH SOUTH EAST or WEST")
     }
-    return {
+    robots.push({
         x: intX,
         y: intY,
         f: F
-    }
+    })
+    return robots[robots.length -1]
 }
 
 function rotateLeft (robot) {
@@ -110,6 +90,80 @@ function rotateRight (robot) {
     }
 }
 
+function move (robot) {
+    const currentDirection = robot.f;
+    switch (currentDirection) {
+        case "NORTH": {
+            if(canMoveNorth(robot)) {
+                robot.y ++
+                return robot
+            } else {
+                return robot
+            }
+        }
+        case "WEST": {
+            if(canMoveWest(robot)) {
+                robot.x --
+                return robot
+            } else {
+                return robot
+            }            
+        }
+        case "SOUTH": {
+            if (canMoveSouth(robot)) {
+                robot.y --
+                return robot
+            } else {
+                return robot
+            }
+            
+        }
+        case "EAST": {
+            if (canMoveEast(robot)) {
+                robot.x ++
+                return robot
+            } else {
+                return robot
+            }
+          
+        }
+        default: console.error("Something went wrong when moving")
+    }
+}
+
+function canMoveNorth (robot) {
+    if (robot.y === 4) {
+        console.log("Move ignored. Cannot move NORTH off table")
+        return false
+    } else {
+        return true
+    }
+}
+function canMoveSouth (robot) {
+    if (robot.y === 0) {
+        console.log("Move ignored. Cannot move SOUTH off table")
+        return false
+    } else {
+        return true
+    }
+}
+function canMoveEast (robot) {
+    if (robot.x === 4) {
+        console.log("Move ignored. Cannot move EAST off table")
+        return false
+    } else {
+        return true
+    }
+}
+function canMoveWest (robot) {
+    if (robot.x === 0) {
+        console.log("Move ignored. Cannot move WEST off table")
+        return false
+    } else {
+        return true
+    }
+}
+
 function report (robots, robot = []) {
     const numberOfBots = robots.length;
     if (numberOfBots === 0) {
@@ -148,5 +202,6 @@ module.exports = {
     rotateLeft,
     rotateRight,
     report,
-    changeActiveRobot
+    changeActiveRobot,
+    move
 }
