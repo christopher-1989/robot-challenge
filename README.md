@@ -2,6 +2,35 @@
 
 ## Project overview
 
+### Information
+
+The robot-challenge is contained within four files.
+
+`main.js` contains the code for running the game.
+
+`exportCommands.js` contains the code for extracting the commands from an external text file.
+
+`robot.js` contains all of the logic for the game.
+
+`robotsDB.js` contains a basic Array that is used for storing information about each robot.
+
+A testing suite and test files have also been included to demonstrate the functionality of the game.
+
+---
+
+## Getting started
+
+Running `node main.js <examplefilename.txt>` in the root directory will start the game. All valid commands in the txt file will be run according to the rules of the game listed below.
+
+---
+
+## Testing
+
+A testing suite has been provided. First run `npm install` to install the test runner Mocha and its dependencies.
+Then in the root directory run `npm test` to see all tests.
+
+---
+
 ### Description
 
 The application is a simulation of a toy robot moving on a square tabletop, of dimensions 5 units x 5 units.
@@ -40,13 +69,10 @@ By default the first robot placed will become the active robot.
 
 ---
 
-## Getting started
+## Further Steps
 
-Running `node main.js <examplefilename.txt>` in the root directory will start the game. All valid commands in the txt file will be run according to the rules of the game.
+Next steps will include making inline comments to elaborate on the function of each block of code and how the code links together.
 
----
+`robot.js` could be refactored to be a new class.
 
-## Testing
-
-A testing suite has been provided. First run `npm install` to install the test runner Mocha and its dependencies.
-Then in the root directory run `npm test` to see all tests.
+Although a basic "Database" was used in the form of an Array, if the challenge was to be scaled up, Redux could be used state management.
