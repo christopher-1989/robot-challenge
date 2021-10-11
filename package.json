@@ -4,7 +4,7 @@
   "description": "The application is a simulation of a toy robot moving on a square tabletop",
   "main": "main.js",
   "scripts": {
-    "test": "mocha -w"
+    "test": "mocha"
   },
   "author": "Chris McDonald",
   "license": "ISC"

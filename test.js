@@ -206,8 +206,7 @@ describe('Inputs', () => {
                     f: "NORTH"
                 }
             ]
-            assert.deepEqual(report(testRobots, testRobot), `There are 2 robots on the table.\n 
-            The active robot is number 2 and is located at 0,0, and facing NORTH`)
+            assert.deepEqual(report(testRobots, testRobot), `There are 2 robots on the table.\nThe active robot is number 2 and is located at 0,0, and facing NORTH`)
         })
     })
     describe('ROBOT #', ()=> {
