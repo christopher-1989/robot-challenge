@@ -4,7 +4,7 @@ const readline = require('readline');
 function processCommandsLineByLine(fileName) {
   const commands = []
   return new Promise(resolve => {
-    const fileStream = fs.createReadStream(`${fileName}.txt`);
+    const fileStream = fs.createReadStream(fileName);
 
     const rl = readline.createInterface({
         input: fileStream,
@@ -18,7 +18,5 @@ function processCommandsLineByLine(fileName) {
       setTimeout(() => resolve(commands), 100)
   })
 }
-
-// processCommandsLineByLine();
 
 module.exports = processCommandsLineByLine

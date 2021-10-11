@@ -10,7 +10,7 @@ const {
     changeActiveRobot,
     move,
     processCommands
- } = require('./main')
+ } = require('./robot')
 
 describe('Inputs', () => {
     describe('PLACE ...', () => {
