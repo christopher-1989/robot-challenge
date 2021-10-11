@@ -1,4 +1,4 @@
-const { stringify } = require("querystring")
+const robotsOnTable = require('./robotsDB');
 
 const inputCommands = [
     "PLACE 0,0,NORTH",
@@ -7,8 +7,6 @@ const inputCommands = [
 ]
 
 const validDirections = ['NORTH', 'EAST', 'SOUTH', 'WEST']
-
-const robotsOnTable = []
 
 function findFirstPlacement (listOfCommands) {
     for ( let i = 0; i < listOfCommands.length; i++) {
@@ -22,7 +20,7 @@ function findFirstPlacement (listOfCommands) {
     throw new Error("There was no Placement initialisation")
 }
 
-function formatPlacementCommand (placeCommand, robots = []) {
+function placementCommand (placeCommand, robots = []) {
     const coordDirection = placeCommand.split(' ')[1]
     if (!coordDirection) {
         throw new Error("Incorrect format. Expected 'PLACE X,Y,F'")
@@ -133,7 +131,7 @@ function move (robot) {
 
 function canMoveNorth (robot) {
     if (robot.y === 4) {
-        console.log("Move ignored. Cannot move NORTH off table")
+        // console.log("Move ignored. Cannot move NORTH off table")
         return false
     } else {
         return true
@@ -141,7 +139,7 @@ function canMoveNorth (robot) {
 }
 function canMoveSouth (robot) {
     if (robot.y === 0) {
-        console.log("Move ignored. Cannot move SOUTH off table")
+        // console.log("Move ignored. Cannot move SOUTH off table")
         return false
     } else {
         return true
@@ -149,7 +147,7 @@ function canMoveSouth (robot) {
 }
 function canMoveEast (robot) {
     if (robot.x === 4) {
-        console.log("Move ignored. Cannot move EAST off table")
+        // console.log("Move ignored. Cannot move EAST off table")
         return false
     } else {
         return true
@@ -157,19 +155,19 @@ function canMoveEast (robot) {
 }
 function canMoveWest (robot) {
     if (robot.x === 0) {
-        console.log("Move ignored. Cannot move WEST off table")
+        // console.log("Move ignored. Cannot move WEST off table")
         return false
     } else {
         return true
     }
 }
 
-function report (robots, robot = []) {
+function report (robots, robot = {}) {
     const numberOfBots = robots.length;
     if (numberOfBots === 0) {
         return "There are no robots on the table."
     } else if (numberOfBots === 1) {
-        return  `There is 1 robot on the table. It is located at ${robot.x},${robot.y}, and facing ${robot.f}`
+        return  `${robot.x},${robot.y},${robot.f}`
     } else {
         let activeBotIndex 
         robots.forEach((bot, index) => {
@@ -189,19 +187,47 @@ function changeActiveRobot(robots, active) {
     return robots[active-1]
 }
 
-inputCommands.forEach(command => {
-    switch (command) {
-        case "PLACE": 
-            'test'
-    }
-})
+
+
+function processCommands (arrayOfCommands) {
+    const validatedArrayOfCommands = findFirstPlacement(arrayOfCommands)
+    let activeRobot;
+    validatedArrayOfCommands.forEach(command => {
+        if (command.includes("PLACE ")) {
+            activeRobot = placementCommand(command, robotsOnTable)
+        } else {
+            switch (command) {
+                case "RIGHT": {
+                    activeRobot = rotateRight(activeRobot)
+                    break
+                }
+                case "LEFT": {
+                    activeRobot = rotateLeft(activeRobot)
+                    break
+                }
+                case "MOVE": {
+                    activeRobot = move(activeRobot) 
+                    break  
+                }
+                case "REPORT": {
+                    console.log(report(robotsOnTable, activeRobot))
+                    break
+                }
+                default: "Something went wrong processing the commands"
+                    
+            }
+        }
+        
+    })
+}
 
 module.exports = {
     findFirstPlacement,
-    formatPlacementCommand,
+    placementCommand,
     rotateLeft,
     rotateRight,
     report,
     changeActiveRobot,
-    move
+    move,
+    processCommands
 }

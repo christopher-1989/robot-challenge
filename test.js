@@ -1,13 +1,15 @@
 const assert = require('assert');
+const robotsOnTable = require('./robotsDB')
 
 const { 
     findFirstPlacement,
-    formatPlacementCommand,
+    placementCommand,
     rotateLeft,
     rotateRight,
     report,
     changeActiveRobot,
-    move
+    move,
+    processCommands
  } = require('./main')
 
 describe('Inputs', () => {
@@ -46,7 +48,7 @@ describe('Inputs', () => {
             it("throws an error if the format doesn't have a space", () => {
                 const testInput = "PLACEXY";
                 assert.throws(() => {
-                    formatPlacementCommand(testInput);
+                    placementCommand(testInput);
                 }, {
                     name: "Error",
                     message: "Incorrect format. Expected 'PLACE X,Y,F'"
@@ -54,7 +56,7 @@ describe('Inputs', () => {
             })
             it('returns an object with the keys x,y,f', () => {
                 const testInput = "PLACE 1,2,SOUTH";
-                const result = formatPlacementCommand(testInput);
+                const result = placementCommand(testInput);
                 assert.deepEqual(result, {
                     x: 1,
                     y: 2,
@@ -64,7 +66,7 @@ describe('Inputs', () => {
             it('throws an error if x or y are not integers', () => {
                 const testInput = "PLACE x,y,LEFT";
                 assert.throws(() => {
-                    formatPlacementCommand(testInput);
+                    placementCommand(testInput);
                 }, {
                     name: "TypeError",
                     message: "X and Y coordinates must be integers"
@@ -73,7 +75,7 @@ describe('Inputs', () => {
             it('throws an error if F is not a valid direction', () => {
                 const testInput = "PLACE 0,0,LEFT";
                 assert.throws(() => {
-                    formatPlacementCommand(testInput);
+                    placementCommand(testInput);
                 }, {
                     name: "Error",
                     message: "F must be a valid direction. Expected NORTH SOUTH EAST or WEST"
@@ -165,7 +167,7 @@ describe('Inputs', () => {
             assert.deepEqual(result.f, "SOUTH")
         })
     })
-    describe("Report command", () => {
+    describe("REPORT", () => {
         it("Prints to the console the x,y,f when there is one robot", () => {
             const testRobot = {
                 x: 2,
@@ -180,7 +182,7 @@ describe('Inputs', () => {
                 }
             ]
             
-            assert.deepEqual(report(testRobots, testRobot), `There is 1 robot on the table. It is located at 2,2, and facing EAST`)
+            assert.deepEqual(report(testRobots, testRobot), `2,2,EAST`)
         })
         it("reports no bots", () => {
             const testRobots = []
@@ -242,7 +244,7 @@ describe('Inputs', () => {
             })
         })
     })
-    describe("Moves", () => {
+    describe("MOVE", () => {
         describe("Validate moves functions", () => {
             it("will ignore commands to make robot fall off NORTH of the board", () => {
                 const testRobot =
@@ -287,3 +289,158 @@ describe('Inputs', () => {
         })
     })
 })
+
+describe('Outputs', () => {
+    describe('process each command in an Array', () => {
+        it('processes a PLACE command correctly', () => {
+            const inputCommands = [
+                "PLACE 0,0,NORTH"
+            ]
+            processCommands(inputCommands)
+            const result = robotsOnTable.pop()
+            assert.deepEqual(result, 
+                {
+                    x: 0,
+                    y: 0,
+                    f: "NORTH"
+                })
+        })
+        it('processes a PLACE command correctly as second command to MOVE', () => {
+            const inputCommands = [
+                "MOVE",
+                "PLACE 1,1,NORTH"
+            ]
+            processCommands(inputCommands)
+            const result = robotsOnTable.pop()
+            assert.deepEqual(result, 
+                {
+                    x: 1,
+                    y: 1,
+                    f: "NORTH"
+                })
+        })
+        it('processes a REPORT command correctly as second command to PLACE ', () => {
+            const inputCommands = [
+                "PLACE 1,1,NORTH",
+                "REPORT"
+            ]
+            processCommands(inputCommands)
+            const result = robotsOnTable.pop()
+            assert.deepEqual(result, 
+                {
+                    x: 1,
+                    y: 1,
+                    f: "NORTH"
+                })
+        })
+        it('turns RIGHT for NORTH returns the direction EAST', () => {
+            const inputCommands = [
+                "PLACE 3,3,NORTH",
+                "RIGHT",
+                "REPORT"
+            ]
+            processCommands(inputCommands)
+            const result = robotsOnTable.pop()
+            assert.deepEqual(result, 
+                {
+                    x: 3,
+                    y: 3,
+                    f: "EAST"
+                })
+        })
+        it('LEFT for NORTH returns the direction WEST', () => {
+            const inputCommands = [
+                "PLACE 2,2,NORTH",
+                "LEFT",
+                "REPORT"
+            ]
+            processCommands(inputCommands)
+            const result = robotsOnTable.pop()
+            assert.deepEqual(result, 
+                {
+                    x: 2,
+                    y: 2,
+                    f: "WEST"
+                })
+        })
+        it('Moves forward when allowed', () => {
+            const inputCommands = [
+                "PLACE 0,0,NORTH",
+                "MOVE",
+                "REPORT"
+            ]
+            processCommands(inputCommands)
+            const result = robotsOnTable.pop()
+            assert.deepEqual(result, 
+                {
+                    x: 0,
+                    y: 1,
+                    f: "NORTH"
+                })
+        })
+        it('Does not move forward when not allowed', () => {
+            const inputCommands = [
+                "PLACE 0,0,SOUTH",
+                "MOVE",
+                "REPORT"
+            ]
+            processCommands(inputCommands)
+            const result = robotsOnTable.pop()
+            assert.deepEqual(result, 
+                {
+                    x: 0,
+                    y: 0,
+                    f: "SOUTH"
+                })
+        })
+        it('Example input and output a)', () => {
+            const inputCommands = [
+                "PLACE 0,0,NORTH",
+                "MOVE",
+                "REPORT"
+            ]
+            processCommands(inputCommands)
+            const result = robotsOnTable.pop()
+            assert.deepEqual(result, 
+                {
+                    x: 0,
+                    y: 1,
+                    f: "NORTH"
+                })
+        })
+        it('Example input and output b)', () => {
+            const inputCommands = [
+                "PLACE 0,0,NORTH",
+                "LEFT",
+                "REPORT"
+            ]
+            processCommands(inputCommands)
+            const result = robotsOnTable.pop()
+            assert.deepEqual(result, 
+                {
+                    x: 0,
+                    y: 0,
+                    f: "WEST"
+                })
+        })
+        it('Example input and output c)', () => {
+            const inputCommands = [
+                "PLACE 1,2,EAST",
+                "MOVE",
+                "MOVE",
+                "LEFT",
+                "MOVE",
+                "REPORT"
+            ]
+            processCommands(inputCommands)
+            const result = robotsOnTable.pop()
+            assert.deepEqual(result, 
+                {
+                    x: 3,
+                    y: 3,
+                    f: "NORTH"
+                })
+        })
+    })
+})
+
