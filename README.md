@@ -75,4 +75,4 @@ Next steps will include making inline comments to elaborate on the function of e
 
 `robot.js` could be refactored to be a new class.
 
-Although a basic "Database" was used in the form of an Array, if the challenge was to be scaled up, Redux could be used state management.
+Although a basic "Database" was used in the form of an Array, if the challenge was to be scaled up, Redux could be used as state management.
