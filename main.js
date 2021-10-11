@@ -1,10 +1,13 @@
 const robotsOnTable = require('./robotsDB');
+const processCommandsLineByLine = require('./exportCommands')
 
-const inputCommands = [
-    "PLACE 0,0,NORTH",
-    "MOVE",
-    "REPORT"
-]
+let commandsFromFile
+async function getCommands() {
+    const commands = await processCommandsLineByLine('example2')
+    commandsFromFile = commands
+}
+
+getCommands()
 
 const validDirections = ['NORTH', 'EAST', 'SOUTH', 'WEST']
 
@@ -220,6 +223,10 @@ function processCommands (arrayOfCommands) {
         
     })
 }
+setTimeout(() => {
+    processCommands(commandsFromFile)
+}, 100)
+
 
 module.exports = {
     findFirstPlacement,
