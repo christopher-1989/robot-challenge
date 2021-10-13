@@ -1,6 +1,10 @@
+// Import the 'database'
 const robotsOnTable = require('./robotsDB');
+
+// Instantiate valid directions. This could future proof to enable directions other than N,S,E,W
 const validDirections = ['NORTH', 'EAST', 'SOUTH', 'WEST']
 
+// A function for removiing commands from the list that preceed a PLACE command
 function findFirstPlacement (listOfCommands) {
     for ( let i = 0; i < listOfCommands.length; i++) {
         if (!listOfCommands[i].startsWith("PLACE ")){
@@ -13,13 +17,14 @@ function findFirstPlacement (listOfCommands) {
     throw new Error("There was no Placement initialisation")
 }
 
+// Function for PLACE command. The second parameter defaults to an empty array for testing
 function placementCommand (placeCommand, robots = []) {
-    const coordDirection = placeCommand.split(' ')[1]
-    if (!coordDirection) {
+    const coordDirection = placeCommand.split(' ')[1]  // Get the coordinates and the direction out of the entire placeCommand argument passed into the function
+    if (!coordDirection) { 
         throw new Error("Incorrect format. Expected 'PLACE X,Y,F'")
     }
-    const [X, Y, F] = coordDirection.split(',');
-    intX = parseInt(X);
+    const [X, Y, F] = coordDirection.split(','); // Define the x and y coordinates and the direction facing from the coordDirection variable
+    intX = parseInt(X); // Convert x and y to integers
     intY = parseInt(Y);
     if(isNaN(intX) || isNaN(intY)) {
         throw new TypeError("X and Y coordinates must be integers")
@@ -27,6 +32,8 @@ function placementCommand (placeCommand, robots = []) {
     if(validDirections.indexOf(F) === -1) {
         throw new Error("F must be a valid direction. Expected NORTH SOUTH EAST or WEST")
     }
+    // Create a new robot as an Object with keys 'x', 'y', 'f', for the coordinates and the direction respectively.
+    // Add the robot to the 'database' of robots on the table 
     robots.push({
         x: intX,
         y: intY,
@@ -35,6 +42,7 @@ function placementCommand (placeCommand, robots = []) {
     return robots[robots.length -1]
 }
 
+// Function for rotating a robot to the left (counter-clockwise)
 function rotateLeft (robot) {
     const currentDirection = robot.f
     switch (currentDirection) {
@@ -54,10 +62,11 @@ function rotateLeft (robot) {
             robot.f = "NORTH"
             return robot
         }
-        default: console.error("Something went wrong")
+        default: console.error("Something went wrong rotating to the left")
     }
 }
 
+// Function for rotating a robot to the right (clockwise)
 function rotateRight (robot) {
     const currentDirection = robot.f
     switch (currentDirection) {
@@ -77,18 +86,21 @@ function rotateRight (robot) {
             robot.f = "SOUTH"
             return robot
         }
-        default: console.error("Something went wrong")
+        default: console.error("Something went wrong rotating to the right")
     }
 }
 
+// A function for moving one robot
 function move (robot) {
     const currentDirection = robot.f;
     switch (currentDirection) {
         case "NORTH": {
+            // Before each appropriate coordinate is changed to show a movement, a check is performed that the robot will not move off the edge of the table
             if(canMoveNorth(robot)) {
                 robot.y ++
                 return robot
             } else {
+                // If the robot will move off the table, the move is ignored
                 return robot
             }
         }
@@ -122,6 +134,7 @@ function move (robot) {
     }
 }
 
+// The following four functions are for checking if a move is valid
 function canMoveNorth (robot) {
     if (robot.y === 4) {
         // console.log("Move ignored. Cannot move NORTH off table")
@@ -155,6 +168,7 @@ function canMoveWest (robot) {
     }
 }
 
+// A function for reporting on the state of the robots on the table
 function report (robots, robot = {}) {
     const numberOfBots = robots.length;
     if (numberOfBots === 0) {
@@ -172,6 +186,7 @@ function report (robots, robot = {}) {
     }
 }
 
+// A function for changing the active robot number
 function changeActiveRobot(robots, active) {
     if (active > robots.length) {
         throw new Error("Robot number is not active")
@@ -179,16 +194,18 @@ function changeActiveRobot(robots, active) {
     return robots[active-1]
 }
 
+// The function for running the commands.
 function processCommands (arrayOfCommands) {
-    const validatedArrayOfCommands = findFirstPlacement(arrayOfCommands)
-    let activeRobot;
+    const validatedArrayOfCommands = findFirstPlacement(arrayOfCommands) // Find first placement from the list of commands
+    let activeRobot; // Instantiate a new activeRobot
     validatedArrayOfCommands.forEach(command => {
-        if (command.includes("PLACE ")) {
+        // The logic below determines which function to run.
+        if (command.includes("PLACE ")) { 
             activeRobot = placementCommand(command, robotsOnTable)
         } else if (command.includes("ROBOT ")){
            activeRobot = changeActiveRobot(robotsOnTable, command.split(' ')[1])
         } else {
-            switch (command) {
+            switch (command) { // Switch is used here as the remaining commands are single words requiring no processing
                 case "RIGHT": {
                     activeRobot = rotateRight(activeRobot)
                     break
