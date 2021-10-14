@@ -25,7 +25,7 @@ function placementCommand (placeCommand, robots = []) {
     }
     const [X, Y, F] = coordDirection.split(','); // Define the x and y coordinates and the direction facing from the coordDirection variable
     const intX = parseInt(X); // Convert x and y to integers
-    const intY = parseInt(Y);
+    const intY = parseInt(Y); 
     if(isNaN(intX) || isNaN(intY)) {
         throw new TypeError("X and Y coordinates must be integers")
     }
@@ -196,6 +196,9 @@ function changeActiveRobot(robots, active) {
 
 // The function for running the commands.
 function processCommands (arrayOfCommands) {
+    if (arrayOfCommands.length === 0) {
+        throw new Error("There are no input commands")
+    }
     const validatedArrayOfCommands = findFirstPlacement(arrayOfCommands) // Find first placement from the list of commands
     let activeRobot; // Instantiate a new activeRobot
     validatedArrayOfCommands.forEach(command => {

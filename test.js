@@ -291,6 +291,15 @@ describe('Inputs', () => {
 
 describe('Outputs', () => {
     describe('process each command in an Array', () => {
+        it('throws an error if the commands array is empty', () => {
+            const inputCommands = []
+            assert.throws(() => {
+                processCommands(inputCommands);
+            }, {
+                name: "Error",
+                message: "There are no input commands"
+            })
+        })
         it('processes a PLACE command correctly', () => {
             const inputCommands = [
                 "PLACE 0,0,NORTH"
