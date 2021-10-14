@@ -71,8 +71,6 @@ By default the first robot placed will become the active robot.
 
 ## Further Steps
 
-Next steps will include making inline comments to elaborate on the function of each block of code and how the code links together.
-
 `robot.js` could be refactored to be a new class.
 
 Although a basic "Database" was used in the form of an Array, if the challenge was to be scaled up, Redux could be used as state management.

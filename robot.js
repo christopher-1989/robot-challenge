@@ -24,8 +24,8 @@ function placementCommand (placeCommand, robots = []) {
         throw new Error("Incorrect format. Expected 'PLACE X,Y,F'")
     }
     const [X, Y, F] = coordDirection.split(','); // Define the x and y coordinates and the direction facing from the coordDirection variable
-    intX = parseInt(X); // Convert x and y to integers
-    intY = parseInt(Y);
+    const intX = parseInt(X); // Convert x and y to integers
+    const intY = parseInt(Y);
     if(isNaN(intX) || isNaN(intY)) {
         throw new TypeError("X and Y coordinates must be integers")
     }
