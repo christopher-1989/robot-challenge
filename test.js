@@ -457,14 +457,33 @@ describe('Get commands asynchronous function', () => {
     it('Rejects when text file does not exist', async () => {
         await assert.rejects(async () => {
             const commands = await processCommandsLineByLine('doesNotExist.txt').catch((err) => {
-            // const commands = await processCommandsLineByLine('example1.txt').catch((err) => {
             throw new Error (err)
-            // console.log(err)
             })
         },
         {
             message: "Error: ENOENT: no such file or directory, open 'doesNotExist.txt'"
         })
+    });
 
-    })
+    it('does not Reject when text file does exist', async () => {
+        await assert.doesNotReject(async () => {
+            const commands = await processCommandsLineByLine('example1.txt').catch((err) => {
+            throw new Error (err)
+            })
+        })
+    });
+    it('returns an array', async () => {
+        const commandsFromFile = await processCommandsLineByLine('example1.txt').catch((err) => {
+            throw new Error (err)
+            })
+        assert(commandsFromFile instanceof Array);
+    });
+    it('returns an array of commands from the file', async () => {
+        const commandsFromFile = await processCommandsLineByLine('example1.txt').catch((err) => {
+            throw new Error (err)
+            })
+        const staticCommands = ['PLACE 0,0,NORTH', 'MOVE', 'REPORT'];
+
+        assert.deepEqual(commandsFromFile, staticCommands)
+    });
 })
