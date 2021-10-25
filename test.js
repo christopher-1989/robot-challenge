@@ -10,7 +10,8 @@ const {
     changeActiveRobot,
     move,
     processCommands
- } = require('./robot')
+ } = require('./robot');
+const processCommandsLineByLine = require('./exportCommands');
 
 describe('Inputs', () => {
     describe('PLACE ...', () => {
@@ -452,3 +453,18 @@ describe('Outputs', () => {
     })
 })
 
+describe('Get commands asynchronous function', () => {
+    it('Rejects when text file does not exist', async () => {
+        await assert.rejects(async () => {
+            const commands = await processCommandsLineByLine('doesNotExist.txt').catch((err) => {
+            // const commands = await processCommandsLineByLine('example1.txt').catch((err) => {
+            throw new Error (err)
+            // console.log(err)
+            })
+        },
+        {
+            message: "Error: ENOENT: no such file or directory, open 'doesNotExist.txt'"
+        })
+
+    })
+})
